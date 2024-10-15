@@ -6,6 +6,7 @@ import {
   PermissionStatus,
 } from "expo-image-picker";
 import { Colors } from "../../constants/colors";
+import OutlinedButton from "../ui/outlined-button";
 
 function ImagePicker() {
   const [cameraPermissionInformation, requestPermission] =
@@ -33,7 +34,7 @@ function ImagePicker() {
     const hasPermission = await verifyPermissions();
 
     if (!hasPermission) {
-      return ;
+      return;
     }
 
     try {
@@ -45,7 +46,7 @@ function ImagePicker() {
 
       if (!image.canceled) {
         setImageUri(image.assets[0].uri);
-        console.log(image.assets[0].uri);
+        // console.log(image.assets[0].uri);
       } else {
         Alert.alert("No image taken", "You didn't take any image.");
       }
@@ -63,7 +64,9 @@ function ImagePicker() {
   return (
     <View>
       <View style={styles.imagePreview}>{imagePreview}</View>
-      <Button title="Take Image" onPress={takeImage} />
+      <OutlinedButton icon="camera" onPress={takeImage}>
+        Take Image
+      </OutlinedButton>
     </View>
   );
 }
@@ -71,7 +74,7 @@ function ImagePicker() {
 const styles = StyleSheet.create({
   imagePreview: {
     width: "100%",
-    height: 200,
+    height: 250,
     marginVertical: 8,
     justifyContent: "center",
     alignItems: "center",
@@ -81,7 +84,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: "100%",
+    height: "100%"
   },
 });
 
