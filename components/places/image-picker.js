@@ -1,5 +1,5 @@
 import React from "react";
-import { Alert, Button, Text, View, StyleSheet, Image } from "react-native";
+import { Alert, Text, View, StyleSheet, Image } from "react-native";
 import {
   launchCameraAsync,
   useCameraPermissions,
