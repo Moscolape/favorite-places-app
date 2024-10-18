@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 
 import { NavigationContainer } from "@react-navigation/native";
@@ -9,10 +9,28 @@ import AddPlace from "./screens/add-place";
 import IconButton from "./components/ui/icon-button";
 import { Colors } from "./constants/colors";
 import Map from "./screens/map";
+import { init } from "./util/database";
+import LoadingOverlay from "./components/ui/loader";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [dbInitialized, setDbInitialized] = useState(false);
+
+  useEffect(() => {
+    init()
+      .then(() => {
+        setDbInitialized(true);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  if (!dbInitialized) {
+    return <LoadingOverlay />;
+  }
+  
   return (
     <>
       <StatusBar style="dark" />
