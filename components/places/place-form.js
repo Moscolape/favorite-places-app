@@ -1,20 +1,38 @@
-import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import React, { useCallback, useState } from "react";
+import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 
-import { Colors } from '../../constants/colors';
-import ImagePicker from './image-picker';
-import LocationPicker from './location-picker';
+import { Colors } from "../../constants/colors";
+// @ts-ignore
+import { Place } from "../../models/places";
 
+import Button from "../ui/button";
+import ImagePicker from "./image-picker";
+import LocationPicker from "./location-picker";
 
-function PlaceForm() {
-  const [enteredTitle, setEnteredTitle] = useState('');
+function PlaceForm({onCreatePlace}) {
+  const [enteredTitle, setEnteredTitle] = useState("");
+  const [selectedImage, setSelectedImage] = useState();
+  const [pickedLocation, setPickedLocation] = useState();
 
   function changeTitleHandler(enteredText) {
     setEnteredTitle(enteredText);
   }
 
+  function takeImageHandler(imageUri) {
+    setSelectedImage(imageUri);
+  }
+
+  const pickLocationHandler = useCallback((location) => {
+    setPickedLocation(location);
+  }, []);
+
+  function savePlaceHandler() {
+    const placeData = new Place(enteredTitle, selectedImage, pickedLocation);
+    onCreatePlace(placeData);
+  }
+
   return (
-    <ScrollView style={styles.form}>
+    <ScrollView contentContainerStyle={{ padding: 24 }}>
       <View>
         <Text style={styles.label}>Title</Text>
         <TextInput
@@ -23,8 +41,9 @@ function PlaceForm() {
           value={enteredTitle}
         />
       </View>
-      <ImagePicker />
-      <LocationPicker />
+      <ImagePicker onTakeImage={takeImageHandler} />
+      <LocationPicker onPickLocation={pickLocationHandler} />
+      <Button onPress={savePlaceHandler}>Add Place</Button>
     </ScrollView>
   );
 }
@@ -32,12 +51,8 @@ function PlaceForm() {
 export default PlaceForm;
 
 const styles = StyleSheet.create({
-  form: {
-    flex: 1,
-    padding: 24,
-  },
   label: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 4,
     color: Colors.primary500,
   },

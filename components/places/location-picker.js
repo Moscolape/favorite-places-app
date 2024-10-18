@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Alert, View, StyleSheet, Image, Text } from "react-native";
 import {
   getCurrentPositionAsync,
@@ -7,16 +7,49 @@ import {
 } from "expo-location";
 
 import { Colors } from "../../constants/colors";
-import { getMapPreview } from "../../util/location";
+import { getAddress, getMapPreview } from "../../util/location";
 import OutlinedButton from "../ui/outlined-button";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation, useRoute } from "@react-navigation/native";
 
-function LocationPicker() {
+function LocationPicker({onPickLocation}) {
   const [pickedLocation, setPickedLocation] = useState();
+  const isFocused = useIsFocused();
+
   const navigation = useNavigation();
+  const route = useRoute();
 
   const [locationPermissionInformation, requestPermission] =
     useForegroundPermissions();
+
+  useEffect(() => {
+    if (isFocused && route.params) {
+      const mapPickedLocation = {
+        // @ts-ignore
+        lat: route.params.pickedLat,
+        // @ts-ignore
+        lng: route.params.pickedLng,
+      };
+      // @ts-ignore
+      setPickedLocation(mapPickedLocation);
+    }
+  }, [route, isFocused]);
+
+  useEffect(() => {
+    async function handleLocation() {
+      if (pickedLocation) {
+        const address = await getAddress(
+          // @ts-ignore
+          pickedLocation.lat,
+          // @ts-ignore
+          pickedLocation.lng
+        );
+        // @ts-ignore
+        onPickLocation({ ...pickedLocation, address });
+      }
+    }
+
+    handleLocation();
+  }, [pickedLocation, onPickLocation]);
 
   async function verifyPermissions() {
     if (

@@ -8,7 +8,7 @@ import {
 import { Colors } from "../../constants/colors";
 import OutlinedButton from "../ui/outlined-button";
 
-function ImagePicker() {
+function ImagePicker({onTakeImage}) {
   const [cameraPermissionInformation, requestPermission] =
     useCameraPermissions();
   const [imageUri, setImageUri] = React.useState("");
@@ -46,6 +46,7 @@ function ImagePicker() {
 
       if (!image.canceled) {
         setImageUri(image.assets[0].uri);
+        onTakeImage(image.assets[0].uri);
         // console.log(image.assets[0].uri);
       } else {
         Alert.alert("No image taken", "You didn't take any image.");
