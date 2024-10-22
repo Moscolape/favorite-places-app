@@ -2,7 +2,6 @@ import React, { useCallback, useState } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 
 import { Colors } from "../../constants/colors";
-// @ts-ignore
 import { Place } from "../../models/places";
 
 import Button from "../ui/button";
@@ -27,9 +26,14 @@ function PlaceForm({onCreatePlace}) {
   }, []);
 
   function savePlaceHandler() {
-    const placeData = new Place(enteredTitle, selectedImage, pickedLocation);
+    const placeData = new Place(
+      enteredTitle, 
+      selectedImage
+    );
     onCreatePlace(placeData);
   }
+  
+  
 
   return (
     <ScrollView contentContainerStyle={{ padding: 24 }}>

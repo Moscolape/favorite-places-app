@@ -13,9 +13,9 @@ export async function init() {
         id INTEGER PRIMARY KEY NOT NULL,
         title TEXT NOT NULL,
         imageUri TEXT NOT NULL,
-        address TEXT NOT NULL,
-        lat REAL NOT NULL,
-        lng REAL NOT NULL
+        address TEXT,
+        lat REAL,
+        lng REAL
       );
     `);
 
@@ -31,15 +31,19 @@ export async function insertPlace(place) {
   const db = await openDatabase();
 
   try {
+    // Ensure all nullable values are explicitly set to null if undefined
+    const title = place.title || null;
+    const imageUri = place.imageUri || null;
+    // const address = place.address ? place.address : null;
+    // const lat = place.location?.lat ?? null;
+    // const lng = place.location?.lng ?? null;
+
+    // Log the data to check for potential null values
+    console.log("Inserting place with data:", { title, imageUri});
+
     const result = await db.runAsync(
-      `INSERT INTO places (title, imageUri, address, lat, lng) VALUES (?, ?, ?, ?, ?)`,
-      [
-        place.title,
-        place.imageUri,
-        place.address,
-        place.location.lat,
-        place.location.lng,
-      ]
+      `INSERT INTO places (title, imageUri) VALUES (?, ?)`,
+      [title, imageUri]
     );
 
     console.log("Place inserted successfully:", result);
